@@ -28,7 +28,8 @@ public class UsuarioService {
      public List<Usuario> listarTodos(){
         return usuarioRepository.findAll();
     }
-    public void excluir(Long id){Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+    public void excluir(Long id){
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if (usuarioOptional.isPresent()){
             usuarioRepository.delete(usuarioOptional.get());
         } else {
