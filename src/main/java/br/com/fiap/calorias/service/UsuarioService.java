@@ -16,7 +16,7 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
-    public Usuario buscarPorId(Long id){
+    public Usuario buscarPorId (Long id){
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if (usuarioOptional.isPresent()){
             return usuarioOptional.get();
