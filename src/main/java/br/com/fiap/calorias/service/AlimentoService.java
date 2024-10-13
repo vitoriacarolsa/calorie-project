@@ -18,20 +18,46 @@ public class AlimentoService {
     private AlimentoRepository alimentoRepository;
 
     public AlimentoExibicaoDTO salvarAlimento(AlimentoCadastroDTO alimentoDTO){
+
         Alimento alimento = new Alimento();
         BeanUtils.copyProperties(alimentoDTO, alimento);
+
+        alimento.setTotalCalorias(
+                calcularCalorias(
+                        alimento.getQuantidadeProteina(),
+                        alimento.getQuantidadeCarboidrato(),
+                        alimento.getQuantidadeGorduras()
+                )
+        );
+
         Alimento alimentoSalvo = alimentoRepository.save(alimento);
         return new AlimentoExibicaoDTO(alimentoSalvo);
+
     }
-    public AlimentoExibicaoDTO listarPorId(Long id){
+
+
+    public AlimentoExibicaoDTO buscarPorId(Long id){
         Optional<Alimento> alimentoOptional =
                 alimentoRepository.findById(id);
+
         if (alimentoOptional.isPresent()){
             return new AlimentoExibicaoDTO(alimentoOptional.get());
         } else {
             throw new RuntimeException("Alimento não existe!");
         }
     }
+
+    public AlimentoExibicaoDTO buscarPorNome(String nome){
+        Optional<Alimento> alimentoOptional =
+                alimentoRepository.buscarPorNome(nome);
+
+        if (alimentoOptional.isPresent()){
+            return new AlimentoExibicaoDTO(alimentoOptional.get());
+        } else {
+            throw new RuntimeException("Alimento não existe!");
+        }
+    }
+
     public List<AlimentoExibicaoDTO> listarTodos(){
         return alimentoRepository
                 .findAll()
@@ -39,22 +65,56 @@ public class AlimentoService {
                 .map(AlimentoExibicaoDTO::new)
                 .toList();
     }
+
+    public List<AlimentoExibicaoDTO> listarAlimentosPorFaixaDeCalorias(Double caloriaMinima, Double caloriaMaxima){
+        return alimentoRepository
+                .listarAlimentosPorFaixaDeCalorias(caloriaMinima, caloriaMaxima)
+                .stream()
+                .map(AlimentoExibicaoDTO::new)
+                .toList();
+    }
+
     public void excluir(Long id){
         Optional<Alimento> alimentoOptional =
                 alimentoRepository.findById(id);
+
         if (alimentoOptional.isPresent()){
             alimentoRepository.delete(alimentoOptional.get());
         } else {
             throw new RuntimeException("Alimento não encontrado!");
         }
     }
-    public Alimento atualizar(Alimento alimento){
+
+    public AlimentoExibicaoDTO atualizar(AlimentoCadastroDTO alimentoDTO){
         Optional<Alimento> alimentoOptional =
-                alimentoRepository.findById(alimento.getAlimentoId());
+                alimentoRepository.findById(alimentoDTO.alimentoId());
+
         if (alimentoOptional.isPresent()){
-            return alimentoRepository.save(alimento);
+            Alimento alimento = new Alimento();
+            BeanUtils.copyProperties(alimentoDTO, alimento);
+
+            alimento.setTotalCalorias(
+                    calcularCalorias(
+                            alimento.getQuantidadeProteina(),
+                            alimento.getQuantidadeCarboidrato(),
+                            alimento.getQuantidadeGorduras()
+                    )
+            );
+
+            return new AlimentoExibicaoDTO(alimentoRepository.save(alimento));
         } else {
             throw new RuntimeException("Alimento não encontrado!");
         }
     }
+
+    public Double calcularCalorias(Double proteinas, Double carboidratos, Double gorduras){
+        Double calorias = (proteinas * 4) + (carboidratos * 4) + (gorduras * 9);
+        System.out.println(calorias);
+        return calorias;
+    }
+
+    public List<AlimentoExibicaoDTO> listarTotalCaloriasMenorQue(Double totalCalorias){
+        return alimentoRepository.findByTotalCaloriasLessThan(totalCalorias);
+    }
+
 }
