@@ -1,5 +1,6 @@
 package br.com.fiap.calorias.controller;
 
+import br.com.fiap.calorias.dto.UsuarioExibicaoDTO;
 import br.com.fiap.calorias.model.Usuario;
 import br.com.fiap.calorias.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,12 @@ public class UsuarioController {
 
     @GetMapping("/usuarios")
     @ResponseStatus(HttpStatus.OK)
-    public List<Usuario> listarTodos(){
+    public List<UsuarioExibicaoDTO> listarTodos(){
         return usuarioService.listarTodos();
     }
 
     @GetMapping("/usuarios/{usuarioId}")
-    public ResponseEntity<Usuario> buscarPorId (@PathVariable Long usuarioId) {
+    public ResponseEntity<UsuarioExibicaoDTO> buscarPorId (@PathVariable Long usuarioId) {
        try{
            return ResponseEntity.ok(usuarioService.buscarPorId(usuarioId));
        }catch (Exception e){
