@@ -31,11 +31,7 @@ public class UsuarioController {
 
     @GetMapping("/usuarios/{usuarioId}")
     public ResponseEntity<UsuarioExibicaoDTO> buscarPorId(@PathVariable Long usuarioId){
-        try {
-            return ResponseEntity.ok(usuarioService.listarPorId(usuarioId));
-        } catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(usuarioService.buscarPorId(usuarioId));
     }
 
     @DeleteMapping("/usuarios/{usuarioId}")
