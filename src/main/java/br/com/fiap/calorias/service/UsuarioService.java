@@ -7,6 +7,7 @@ import br.com.fiap.calorias.model.Usuario;
 import br.com.fiap.calorias.repository.UsuarioRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,9 +20,11 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public UsuarioExibicaoDTO salvarUsuario(UsuarioCadastroDTO usuarioDTO){
+        String senhaCriptografada = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
 
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
+        usuario.setSenha(senhaCriptografada);
 
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
         return new UsuarioExibicaoDTO(usuarioSalvo);
