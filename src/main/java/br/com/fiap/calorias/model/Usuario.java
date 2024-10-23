@@ -16,16 +16,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-
 public class Usuario implements UserDetails {
-    @Id
-    @GeneratedValue
-            (strategy = GenerationType.SEQUENCE,
-             generator = "SEQ_USUARIOS")
-    @SequenceGenerator(name = "SEQ_USUARIOS", sequenceName = "SEQ_USUARIOS", allocationSize = 1)
-    @Column(name = "usuario_id")
 
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "SEQ_USUARIOS"
+    )
+    @SequenceGenerator(
+            name = "SEQ_USUARIOS",
+            sequenceName = "SEQ_USUARIOS",
+            allocationSize = 1
+    )
+    @Column(name = "usuario_id")
     private Long usuarioId;
+
     private String nome;
     private String email;
     private String senha;
@@ -35,11 +40,15 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println(this.role);
         if (this.role == UsuarioRole.ADMIN) {
+            System.out.println("admin cara");
             return List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_USER"));
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
         } else {
+            System.out.println("user cara");
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }

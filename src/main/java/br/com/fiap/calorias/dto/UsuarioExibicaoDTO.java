@@ -9,7 +9,9 @@ public record UsuarioExibicaoDTO(
 
     public UsuarioExibicaoDTO(Usuario usuario) {
         this(
-       usuario.getUsuarioId(),
-       usuario.getNome(),
-       usuario.getEmail());
-    }}
+                usuario.getUsuarioId(),
+                usuario.getNome(),
+                usuario.getEmail());
+    }
+
+}

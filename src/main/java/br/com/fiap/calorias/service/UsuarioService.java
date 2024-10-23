@@ -20,6 +20,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public UsuarioExibicaoDTO salvarUsuario(UsuarioCadastroDTO usuarioDTO){
+
         String senhaCriptografada = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
 
         Usuario usuario = new Usuario();
@@ -27,6 +28,7 @@ public class UsuarioService {
         usuario.setSenha(senhaCriptografada);
 
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
         return new UsuarioExibicaoDTO(usuarioSalvo);
 
     }
@@ -41,6 +43,17 @@ public class UsuarioService {
             throw new UsuarioNaoEncontradoException("Usuário não existe no banco de dados!");
         }
     }
+
+//    public UsuarioExibicaoDTO buscarPorEmail(String email){
+//        Optional<Usuario> usuarioOptional =
+//                usuarioRepository.findByEmail(email);
+//
+//        if (usuarioOptional.isPresent()){
+//            return new UsuarioExibicaoDTO(usuarioOptional.get());
+//        } else {
+//            throw new UsuarioNaoEncontradoException("Usuário não existe no banco de dados!");
+//        }
+//    }
 
 
     public List<UsuarioExibicaoDTO> listarTodos(){

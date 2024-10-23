@@ -1,8 +1,11 @@
 package br.com.fiap.calorias.controller;
 
+import br.com.fiap.calorias.config.security.TokenService;
 import br.com.fiap.calorias.dto.LoginDTO;
+import br.com.fiap.calorias.dto.TokenDTO;
 import br.com.fiap.calorias.dto.UsuarioCadastroDTO;
 import br.com.fiap.calorias.dto.UsuarioExibicaoDTO;
+import br.com.fiap.calorias.model.Usuario;
 import br.com.fiap.calorias.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +26,38 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid LoginDTO usuarioDto){
-        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken
-                (usuarioDto.email(),usuarioDto.senha());
+    public ResponseEntity login(
+            @RequestBody
+            @Valid
+            LoginDTO usuarioDto
+    ){
+        UsernamePasswordAuthenticationToken usernamePassword =
+                new UsernamePasswordAuthenticationToken(
+                        usuarioDto.email(),
+                        usuarioDto.senha());
+
         Authentication auth = authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+
+        System.out.println(auth.getPrincipal());
+
+        String token = tokenService.gerarToken((Usuario) auth.getPrincipal());
+
+        return ResponseEntity.ok(new TokenDTO(token));
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity registrar(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO){
+    public UsuarioExibicaoDTO registrar(@RequestBody @Valid UsuarioCadastroDTO usuarioCadastroDTO){
+
         UsuarioExibicaoDTO usuarioSalvo = null;
         usuarioSalvo = usuarioService.salvarUsuario(usuarioCadastroDTO);
-        return ResponseEntity.ok(usuarioSalvo);
+
+        return usuarioSalvo;
+
     }
+
 }

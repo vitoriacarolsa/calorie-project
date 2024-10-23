@@ -1,4 +1,4 @@
-package br.com.fiap.calorias.dto;
+package br.com.fiap.calorias.advice;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -33,9 +33,13 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Map<String, String> handleIntegrityViolation(){
+
         Map<String, String> errorMap = new HashMap<>();
+
         errorMap.put("erro", "Usuário já cadastrado!");
+
         return errorMap;
+
     }
 
 }

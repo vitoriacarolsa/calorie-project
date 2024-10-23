@@ -11,6 +11,7 @@ public record AlimentoExibicaoDTO(
         Double quantidadeGorduras,
         Double totalCalorias
 ) {
+
     public AlimentoExibicaoDTO(Alimento alimento) {
         this(
                 alimento.getAlimentoId(),
@@ -22,4 +23,5 @@ public record AlimentoExibicaoDTO(
                 alimento.getTotalCalorias()
         );
     }
+
 }
